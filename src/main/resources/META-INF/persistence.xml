@@ -3,7 +3,21 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
-    <persistence-unit name="default">
-
+    <persistence-unit name="projet_matiere" transaction-type="JTA">
+        <jta-data-source>projet_matiere_j2e</jta-data-source>
+        <class>sn.ept.git47.entity.Marque</class>
+        <class>sn.ept.git47.entity.Categorie</class>
+        <class>sn.ept.git47.entity.Produit</class>
+        <class>sn.ept.git47.entity.Stock</class>
+        <class>sn.ept.git47.entity.Magasin</class>
+        <class>sn.ept.git47.entity.Personne</class>
+        <class>sn.ept.git47.entity.Client</class>
+        <class>sn.ept.git47.entity.Employe</class>
+        <class>sn.ept.git47.entity.Commande</class>
+        <class>sn.ept.git47.entity.ArticleCommande</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
+        </properties>
     </persistence-unit>
 </persistence>
