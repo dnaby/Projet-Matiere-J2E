@@ -1,0 +1,188 @@
+<ui:composition template="template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div class="card crud-demo">
+            <h:form id="form">
+                <p:growl id="commande" showDetail="true" />
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Nouveau" icon="pi pi-plus" actionListener="#{commandeBean.openNewCommande}"
+                                         update=":dialogs:manage-commande-content" oncomplete="PF('manageCommandeDialog').show()"
+                                         styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":dialogs:manage-commande-content" />
+                        </p:commandButton>
+                        <p:commandButton id="delete-commande-button" value="#{commandeBean.deleteButtonMessage}"
+                                         icon="pi pi-trash" actionListener="#{commandeBean.deleteSelectedCommandeList}"
+                                         styleClass="ui-button-danger" disabled="#{!commandeBean.hasSelectedCommandeList()}" update="@this">
+                            <p:confirm header="Confirmation" message="Voulez-vous vraiment supprimer le(s) commande(s) selectionnée(s) ?"
+                                       icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="dt-commande" widgetVar="dtCommandes" var="commande" value="#{commandeBean.commandeList}"
+                             reflow="true" styleClass="commande-table mt-2" selection="#{commandeBean.selectedCommandeList}"
+                             rowKey="#{commande.id}" paginator="true" rows="10" rowSelectMode="add" paginatorPosition="bottom" stripedRows="true">
+                    <f:facet name="header">
+                        <div class="commande-table-header" style="display: flex; justify-content: space-between;">
+                            <span style="font-weight: bold; padding-top: 5px;">Commande</span>
+                            <div class="ui-inputgroup">
+                                <p:inputText id="globalFilter" onkeyup="PF('dtCommandes').filter()"  placeholder="Rechercher..."/>
+                                <p:commandButton icon="pi pi-search" styleClass="ui-button-warning"/>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:ajax event="rowSelect" update=":form:delete-commande-button" />
+                    <p:ajax event="rowUnselect" update=":form:delete-commande-button" />
+                    <p:ajax event="rowSelectCheckbox" update=":form:delete-commande-button" />
+                    <p:ajax event="rowUnselectCheckbox" update=":form:delete-commande-button" />
+                    <p:ajax event="toggleSelect" update=":form:delete-commande-button" />
+
+                    <p:column selectionMode="multiple" exportable="false" style="width: 20px;"></p:column>
+
+                    <p:column headerText="ID" sortBy="#{commande.id}" filterBy="#{commande.id}" styleClass="text-center" style="width: 60px;">
+                        <h:outputText value="#{commande.id}" />
+                    </p:column>
+                    <p:column headerText="Client" sortBy="#{commande.client.prenom} #{commande.client.nom}" filterBy="#{commande.client.prenom} #{commande.client.nom}" styleClass="text-center">
+                        <h:outputText value="#{commande.client.prenom} #{commande.client.nom}" />
+                    </p:column>
+                    <p:column headerText="Statut" sortBy="#{commande.statut}" filterBy="#{commande.statut}" styleClass="text-center" style="width: 90px;">
+                        <h:outputText value="#{commande.statut}" />
+                    </p:column>
+                    <p:column headerText="Date Commande" sortBy="#{commande.dateCommande}" filterBy="#{commande.dateCommande}" styleClass="text-center">
+                        <h:outputText value="#{commande.dateCommande}" />
+                    </p:column>
+                    <p:column headerText="Livraison Voulue" sortBy="#{commande.dateLivraisonVoulue}" filterBy="#{commande.dateLivraisonVoulue}" styleClass="text-center">
+                        <h:outputText value="#{commande.dateLivraisonVoulue}" />
+                    </p:column>
+                    <p:column headerText="Livraison" sortBy="#{commande.dateLivraison}" filterBy="#{commande.dateLivraison}" styleClass="text-center">
+                        <h:outputText value="#{commande.dateLivraison}" />
+                    </p:column>
+                    <p:column headerText="Magasin" sortBy="#{commande.magasin.nom}" filterBy="#{commande.magasin.nom}" styleClass="text-center">
+                        <h:outputText value="#{commande.magasin.nom}" />
+                    </p:column>
+                    <p:column headerText="Vendeur" sortBy="#{commande.vendeur.prenom} #{commande.vendeur.nom}" filterBy="#{commande.vendeur.prenom} #{commande.vendeur.nom}" styleClass="text-center">
+                        <h:outputText value="#{commande.vendeur.prenom} #{commande.vendeur.nom}" />
+                    </p:column>
+                    <p:column headerText="MAJ - Supprimer" exportable="false" styleClass="text-center" style="width: 100px;">
+                        <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-commande-content"
+                                         oncomplete="PF('manageCommandeDialog').show()"
+                                         styleClass="edit-button rounded-button ui-button-success me-2" process="@this">
+                            <f:setPropertyActionListener value="#{commande}" target="#{commandeBean.selectedCommande}" />
+                            <p:resetInput target=":dialogs:manage-commande-content" />
+                        </p:commandButton>
+                        <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                         process="@this"
+                                         oncomplete="PF('deleteCommandeDialog').show()">
+                            <f:setPropertyActionListener value="#{commande}" target="#{commandeBean.selectedCommande}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <h:form id="dialogs">
+                <p:dialog header="commande" resizable="false" fitViewport="true"
+                          width="900px" showEffect="fade" modal="true"
+                          widgetVar="manageCommandeDialog" responsive="true">
+                    <p:outputPanel id="manage-commande-content" class="ui-fluid">
+                        <p:outputPanel rendered="#{not empty commandeBean.selectedCommande}">
+                            <div class="grid ui-fluid">
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-user"/>
+                                            <p:autoComplete dropdown="true" placeholder="Client" value="#{commandeBean.selectedCommande.client.email}"
+                                                            completeMethod="#{commandeBean.completeClients}" scrollHeight="250"
+                                                            dropdownMode="panel" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-star-fill"/>
+                                            <p:spinner placeholder="Statut" min="0" max="4" value="#{commandeBean.selectedCommande.statut}" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-calendar"/>
+                                            <p:datePicker value="#{commandeBean.selectedCommande.dateCommande}" locale="sn" monthNavigator="true" pattern="yyyy-MM-dd" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-calendar-times"/>
+                                            <p:datePicker value="#{commandeBean.selectedCommande.dateLivraisonVoulue}" locale="sn" monthNavigator="true" pattern="yyyy-MM-dd" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-calendar-plus"/>
+                                            <p:datePicker value="#{commandeBean.selectedCommande.dateLivraison}" locale="sn" monthNavigator="true" pattern="yyyy-MM-dd" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-building"/>
+                                            <p:autoComplete dropdown="true" placeholder="Magasin" value="#{commandeBean.selectedCommande.magasin.nom}"
+                                                            completeMethod="#{commandeBean.completeMagasin}" scrollHeight="250"
+                                                            dropdownMode="panel" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-key"/>
+                                            <p:autoComplete dropdown="true" placeholder="Email Vendeur"
+                                                            value="#{commandeBean.selectedCommande.vendeur.email}"
+                                                            completeMethod="#{commandeBean.completeVendeurs}" scrollHeight="250"
+                                                            dropdownMode="panel" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Enregistrer" icon="pi pi-check" actionListener="#{commandeBean.saveCommande}"
+                                         update="manage-commande-content" process="manage-commande-content @this" class="ui-button-success" />
+                        <p:commandButton value="Annuler" icon="pi pi-times" onclick="PF('manageCommandeDialog').hide()"
+                                         class="ui-button-danger" type="button" />
+                    </f:facet>
+                </p:dialog>
+
+                <p:confirmDialog widgetVar="deleteCommandeDialog" showEffect="fade" width="500"
+                                 message="Voulez-vous supprimer cet commande ?" header="Confirmation" severity="warn">
+                    <p:commandButton value="Oui" icon="pi pi-check" actionListener="#{commandeBean.deleteCommande}"
+                                     process="@this" update=":form:delete-commande-button" class="ui-button-success"
+                                     oncomplete="PF('deleteCommandeDialog').hide()" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                                     class="ui-button-danger" onclick="PF('deleteCommandeDialog').hide()" />
+                </p:confirmDialog>
+
+                <p:confirmDialog global="true" showEffect="fade" width="800">
+                    <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes ui-button-success" icon="pi pi-check" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no ui-button-danger"
+                                     icon="pi pi-times" />
+                </p:confirmDialog>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

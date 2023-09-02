@@ -1,0 +1,18 @@
+<ui:composition template="template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <p:galleria value="#{galleriaView.photos}" var="photo" numVisible="5" responsiveOptions="#{galleriaView.responsiveOptions1}"
+                    circular="true" autoPlay="true" transitionInterval="2000" style="margin-top: -10px; margin-left: 1px; margin-right: 1px;">
+            <h:graphicImage value="#{photo.itemImageSrc}" alt="#{photo.alt}" style="display: block;" width="100%" height="757px" />
+            <f:facet name="thumbnail">
+                <h:graphicImage value="#{photo.thumbnailImageSrc}" alt="#{photo.alt}" style="display: block;" width="200px" height="100px" />
+            </f:facet>
+        </p:galleria>
+    </ui:define>
+
+</ui:composition>

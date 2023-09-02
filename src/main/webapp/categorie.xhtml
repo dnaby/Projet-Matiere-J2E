@@ -1,0 +1,127 @@
+<ui:composition template="template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="form">
+                <p:growl id="categorie" showDetail="true" />
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Nouveau" icon="pi pi-plus" actionListener="#{categorieBean.openNewCategorie}"
+                                         update=":dialogs:manage-categorie-content" oncomplete="PF('manageCategorieDialog').show()"
+                                         styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":dialogs:manage-categorie-content" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataView id="dt-categorie" widgetVar="dtCategories" var="categorie" value="#{categorieBean.categorieList}"
+                            reflow="true" styleClass="categorie-table mt-2" selection="#{categorieBean.selectedCategorieList}"
+                            rowKey="#{categorie.id}" paginator="true" rows="8" rowSelectMode="add"
+                            paginatorPosition="bottom" gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+                    <f:facet name="header">
+                        <div class="categorie-table-header" style="display: flex; justify-content: space-between;">
+                            <span style="font-weight: bold; padding-top: 5px;">Catégorie</span>
+                        </div>
+                    </f:facet>
+
+                    <p:dataViewGridItem>
+                        <div class="card"
+                             style="display: flex; flex-direction: row; justify-content: space-between; padding: 10px; margin: 5px;">
+                            <div>
+                                #{categorie.id}. #{categorie.nom}
+                            </div>
+
+                            <div>
+                                <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-categorie-content"
+                                                 oncomplete="PF('manageCategorieDialog').show()"
+                                                 styleClass="edit-button rounded-button ui-button-success me-2" process="@this">
+                                    <f:setPropertyActionListener value="#{categorie}" target="#{categorieBean.selectedCategorie}" />
+                                    <p:resetInput target=":dialogs:manage-categorie-content" />
+                                </p:commandButton>
+                                <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                                 process="@this"
+                                                 oncomplete="PF('deleteCategorieDialog').show()">
+                                    <f:setPropertyActionListener value="#{categorie}" target="#{categorieBean.selectedCategorie}" />
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dataViewGridItem>
+
+                    <p:dataViewListItem>
+                        <div class="card"
+                             style="display: flex; flex-direction: row; justify-content: space-between; padding: 10px; margin: 10px;">
+                            <div>
+                                #{categorie.id}. #{categorie.nom}
+                            </div>
+
+                            <div>
+                                <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-categorie-content"
+                                                 oncomplete="PF('manageCategorieDialog').show()"
+                                                 styleClass="edit-button rounded-button ui-button-success me-2" process="@this">
+                                    <f:setPropertyActionListener value="#{categorie}" target="#{categorieBean.selectedCategorie}" />
+                                    <p:resetInput target=":dialogs:manage-categorie-content" />
+                                </p:commandButton>
+                                <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                                 process="@this"
+                                                 oncomplete="PF('deleteCategorieDialog').show()">
+                                    <f:setPropertyActionListener value="#{categorie}" target="#{categorieBean.selectedCategorie}" />
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dataViewListItem>
+                </p:dataView>
+            </h:form>
+
+            <h:form id="dialogs">
+                <p:dialog header="Catégorie" resizable="false" fitViewport="true"
+                          width="600px" showEffect="fade" modal="true"
+                          widgetVar="manageCategorieDialog" responsive="true">
+                    <p:outputPanel id="manage-categorie-content" class="ui-fluid">
+                        <p:outputPanel rendered="#{not empty categorieBean.selectedCategorie}">
+                            <div class="grid ui-fluid">
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-user" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Nom" required="true" value="#{categorieBean.selectedCategorie.nom}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Enregistrer" icon="pi pi-check" actionListener="#{categorieBean.saveCategorie}"
+                                         styleClass="ui-button-success" update="manage-categorie-content"
+                                         process="manage-categorie-content @this" />
+                        <p:commandButton value="Annuler" icon="pi pi-times" onclick="PF('manageCategorieDialog').hide()"
+                                         class="ui-button-danger" type="button" />
+                    </f:facet>
+                </p:dialog>
+
+                <p:confirmDialog widgetVar="deleteCategorieDialog" showEffect="fade" width="500"
+                                 message="Voulez-vous réellement supprimer cette catégorie ?" header="Confirmation" severity="warn">
+                    <p:commandButton value="Oui" icon="pi pi-check" actionListener="#{categorieBean.deleteCategorie}"
+                                     styleClass="ui-button-success" process="@this"
+                                     oncomplete="PF('deleteCategorieDialog').hide()" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-button-danger" icon="pi pi-times"
+                                     onclick="PF('deleteCategorieDialog').hide()" />
+                </p:confirmDialog>
+
+                <p:confirmDialog global="true" showEffect="fade" width="300">
+                    <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes ui-button-success" icon="pi pi-check" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no ui-button-danger"
+                                     icon="pi pi-times" />
+                </p:confirmDialog>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

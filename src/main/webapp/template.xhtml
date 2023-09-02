@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <link
+                href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+                rel="stylesheet"
+                integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+                crossorigin="anonymous"
+        />
+        <!-- favicon image -->
+        <link rel="icon" type="image/x-icon" href="images/favicon.png" />
+        <!-- title -->
+        <title>Dashboard</title>
+        <!-- style -->
+        <style>
+            *, body {
+                font-family: "PT Mono";
+            }
+
+            .ui-chip.custom-chip {
+                background: none;
+                color: var(--primary-color-text);
+            }
+            #footer {
+                height: 45px; /* Hauteur du footer */
+                background-color: #939090;
+                padding: 10px;
+                text-align: center;
+            }
+            #content {
+                margin-bottom: 45px;
+            }
+        </style>
+    </h:head>
+    <!-- body -->
+    <h:body>
+        <f:view>
+            <div class="card" style="padding-bottom: 5px;">
+                <h:form>
+                    <p:growl id="messages" showDetail="true"/>
+
+                    <div class="card">
+                        <p:sidebar widgetVar="sidebar" style="background-color: #333;">
+                            <h:graphicImage value="images/logo.jpg" alt="logo" width="80%" height="150px" styleClass="ms-3 mb-3" />
+
+                            <p:divider align="center" styleClass="mb-3">
+                                <div class="inline-flex align-items-center">
+                                    <b>Accueil</b>
+                                </div>
+                            </p:divider>
+                            <p:commandButton value="Accueil" icon="pi pi-home" styleClass="mb-1 #{request.getRequestURI().contains('index') ? 'ui-button-outlined' : ''}" action="index.xhtml?faces-redirect=true" style="width: 100%;" />
+
+                            <p:divider align="center" styleClass="mb-3">
+                                <div class="inline-flex align-items-center">
+                                    <i class="pi pi-box mr-2"/>
+                                    <b>Production</b>
+                                </div>
+                            </p:divider>
+                            <p:commandButton value="Catégorie" icon="pi pi-tags" styleClass="ui-button-success d-block mb-2 #{request.getRequestURI().contains('categorie') ? 'ui-button-outlined' : ''}" action="categorie.xhtml?faces-redirect=true" style="width: 100%;" />
+                            <p:commandButton value="Marque" icon="pi pi-flag-fill" styleClass="ui-button-success d-block mb-2 #{request.getRequestURI().contains('marque') ? 'ui-button-outlined' : ''}" action="marque.xhtml?faces-redirect=true" style="width: 100%;" />
+                            <p:commandButton value="Produit" icon="pi pi-box" styleClass="ui-button-plain d-block mb-2 #{request.getRequestURI().contains('produit') ? 'ui-button-outlined' : ''}" action="produit.xhtml?faces-redirect=true" style="width: 100%;" />
+                            <p:commandButton value="Stock" icon="pi pi-database" styleClass="ui-button-secondary d-block mb-2 #{request.getRequestURI().contains('stock') ? 'ui-button-outlined' : ''}" action="stock.xhtml?faces-redirect=true" style="width: 100%;" />
+
+                            <p:divider align="center" styleClass="mb-3">
+                                <div class="inline-flex align-items-center">
+                                    <i class="pi pi-shopping-cart mr-2"/>
+                                    <b>Vente</b>
+                                </div>
+                            </p:divider>
+                            <p:commandButton value="Article Commandé" icon="pi pi-shopping-cart" styleClass="ui-button-warning d-block mb-2 #{request.getRequestURI().contains('article') ? 'ui-button-outlined' : ''}" action="article.xhtml?faces-redirect=true" style="width: 100%;" />
+                            <p:commandButton value="Client" icon="pi pi-user" styleClass="ui-button-help d-block mb-2 #{request.getRequestURI().contains('client') ? 'ui-button-outlined' : ''}" action="client.xhtml?faces-redirect=true" style="width: 100%;" />
+                            <p:commandButton value="Commande" icon="pi pi-inbox" styleClass="ui-button-warning d-block mb-2 #{request.getRequestURI().contains('commande') ? 'ui-button-outlined' : ''}" action="commande.xhtml?faces-redirect=true" style="width: 100%;" />
+                            <p:commandButton value="Employé" icon="pi pi-user" styleClass="ui-button-help d-block mb-2 #{request.getRequestURI().contains('employe') ? 'ui-button-outlined' : ''}" action="employe.xhtml?faces-redirect=true" style="width: 100%;" />
+                            <p:commandButton value="Magasin" icon="pi pi-building" styleClass="ui-button-secondary d-block mb-2 #{request.getRequestURI().contains('magasin') ? 'ui-button-outlined' : ''}" action="magasin.xhtml?faces-redirect=true" style="width: 100%;" />
+                        </p:sidebar>
+                    </div>
+
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:commandButton icon="pi pi-bars" type="button" onclick="PF('sidebar').show()" styleClass="ui-button-success mr-2" />
+                        </p:toolbarGroup>
+
+                        <p:toolbarGroup align="right">
+                            <p:badge value="10+" severity="danger" styleClass="mt-2">
+                                <i class="pi pi-bell" style="font-size: 1.5rem; padding-top: 10px;"/>
+                            </p:badge>
+                            <p:chip label="Mouhamadou Naby DIA" image="images/avatar.png" styleClass="ms-4 me-2 custom-chip"/>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                </h:form>
+            </div>
+
+            <!-- Contenu de la page -->
+            <div id="content">
+                <ui:insert name="content" />
+            </div>
+
+            <div id="footer" style="position: fixed; bottom: 0; width: 100%;">
+                <p>Tous droits réservés &copy; 2023</p>
+            </div>
+        </f:view>
+    </h:body>
+
+</html>

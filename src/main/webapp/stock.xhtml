@@ -1,0 +1,169 @@
+<ui:composition template="template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="form">
+                <p:growl id="stock" showDetail="true" />
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Nouveau" icon="pi pi-plus" actionListener="#{stockBean.openNewStock}"
+                                         update=":dialogs:manage-stock-content" oncomplete="PF('manageStockDialog').show()"
+                                         styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":dialogs:manage-stock-content" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataView id="dt-stock" widgetVar="dtStocks" var="stock" value="#{stockBean.stockList}"
+                            reflow="true" styleClass="stock-table mt-2" selection="#{stockBean.selectedStockList}"
+                            rowKey="#{stock.id}" paginator="true" rows="10" rowSelectMode="add"
+                            paginatorPosition="bottom" gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+                    <f:facet name="header">
+                        <div class="stock-table-header" style="display: flex; justify-content: space-between;">
+                            <span style="font-weight: bold; padding-top: 5px;">Marque</span>
+                        </div>
+                    </f:facet>
+
+                    <p:dataViewGridItem>
+                        <div class="card"
+                             style="display: flex; justify-content: space-between; padding: 10px; margin: 5px;">
+                            <div>
+                                <div>
+                                    <span style="font-weight: bold; font-style: italic;">🏢Magasin: </span>#{stock.magasin.nom}
+                                </div>
+
+                                <div>
+                                    <span style="font-weight: bold; font-style: italic;">📦Produit: </span>#{stock.produit.nom}
+                                </div>
+
+                                <div>
+                                    <span style="font-weight: bold; font-style: italic;">🛢️Quantité: </span>#{stock.quantite}
+                                </div>
+                            </div>
+
+                            <div style="padding-top: 10px; margin-left: 440px">
+                                <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-stock-content"
+                                                 oncomplete="PF('manageStockDialog').show()"
+                                                 styleClass="edit-button rounded-button ui-button-success me-2" process="@this">
+                                    <f:setPropertyActionListener value="#{stock}" target="#{stockBean.selectedStock}" />
+                                    <p:resetInput target=":dialogs:manage-stock-content" />
+                                </p:commandButton>
+                                <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                                 process="@this"
+                                                 oncomplete="PF('deleteStockDialog').show()">
+                                    <f:setPropertyActionListener value="#{stock}" target="#{stockBean.selectedStock}" />
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dataViewGridItem>
+
+                    <p:dataViewListItem>
+                        <div class="card"
+                             style="display: flex; flex-direction: row; justify-content: space-between; padding: 10px; margin: 10px;">
+                            <div>
+                                <div>
+                                    <span style="font-weight: bold; font-style: italic;">🏢Magasin: </span>#{stock.magasin.nom}
+                                </div>
+
+                                <div>
+                                    <span style="font-weight: bold; font-style: italic;">📦Produit: </span>#{stock.produit.nom}
+                                </div>
+
+                                <div>
+                                    <span style="font-weight: bold; font-style: italic;">🛢️Quantité: </span>#{stock.quantite}
+                                </div>
+                            </div>
+
+                            <div>
+                                <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-stock-content"
+                                                 oncomplete="PF('manageStockDialog').show()"
+                                                 styleClass="edit-button rounded-button ui-button-success me-2" process="@this">
+                                    <f:setPropertyActionListener value="#{stock}" target="#{stockBean.selectedStock}" />
+                                    <p:resetInput target=":dialogs:manage-stock-content" />
+                                </p:commandButton>
+                                <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                                 process="@this"
+                                                 oncomplete="PF('deleteStockDialog').show()">
+                                    <f:setPropertyActionListener value="#{stock}" target="#{stockBean.selectedStock}" />
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </p:dataViewListItem>
+                </p:dataView>
+            </h:form>
+
+            <h:form id="dialogs">
+                <p:dialog header="Stock" resizable="false" fitViewport="true"
+                          width="600px" showEffect="fade" modal="true"
+                          widgetVar="manageStockDialog" responsive="true">
+                    <p:outputPanel id="manage-stock-content" class="ui-fluid">
+                        <p:outputPanel rendered="#{not empty stockBean.selectedStock}">
+                            <div class="grid ui-fluid">
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-building"/>
+                                            <p:autoComplete dropdown="true" placeholder="Magasin" value="#{stockBean.selectedStock.magasin.nom}"
+                                                            completeMethod="#{stockBean.completeMagasin}" scrollHeight="250"
+                                                            dropdownMode="panel" disabled="#{not empty stockBean.selectedStock.magasin.nom}" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-box"/>
+                                            <p:autoComplete dropdown="true" placeholder="Produit" value="#{stockBean.selectedStock.produit.nom}"
+                                                            completeMethod="#{stockBean.completeProduit}" scrollHeight="250"
+                                                            dropdownMode="panel" disabled="#{not empty stockBean.selectedStock.produit.nom}" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-shopping-cart"/>
+                                            <p:spinner id="quantity" placeholder="Quantité" min="0" styleClass="ui-button-help" value="#{stockBean.selectedStock.quantite}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Enregistrer" icon="pi pi-check" actionListener="#{stockBean.saveStock}"
+                                         styleClass="ui-button-success" update="manage-stock-content"
+                                         process="manage-stock-content @this" />
+                        <p:commandButton value="Annuler" icon="pi pi-times" onclick="PF('manageStockDialog').hide()"
+                                         class="ui-button-danger" type="button" />
+                    </f:facet>
+                </p:dialog>
+
+                <p:confirmDialog widgetVar="deleteStockDialog" showEffect="fade" width="500"
+                                 message="Voulez-vous réellement supprimer ce stock ?" header="Confirmation" severity="warn">
+                    <p:commandButton value="Oui" icon="pi pi-check" actionListener="#{stockBean.deleteStock}"
+                                     styleClass="ui-button-success" process="@this"
+                                     oncomplete="PF('deleteStockDialog').hide()" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-button-danger" icon="pi pi-times"
+                                     onclick="PF('deleteStockDialog').hide()" />
+                </p:confirmDialog>
+
+                <p:confirmDialog global="true" showEffect="fade" width="300">
+                    <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes ui-button-success" icon="pi pi-check" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no ui-button-danger"
+                                     icon="pi pi-times" />
+                </p:confirmDialog>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,197 @@
+<ui:composition template="template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div class="card crud-demo">
+            <h:form id="form">
+                <p:growl id="client" showDetail="true" />
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Nouveau" icon="pi pi-plus" actionListener="#{clientBean.openNewClient}"
+                                         update=":dialogs:manage-client-content" oncomplete="PF('manageClientDialog').show()"
+                                         styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":dialogs:manage-client-content" />
+                        </p:commandButton>
+                        <p:commandButton id="delete-client-button" value="#{clientBean.deleteButtonMessage}"
+                                         icon="pi pi-trash" actionListener="#{clientBean.deleteSelectedClientList}"
+                                         styleClass="ui-button-danger" disabled="#{!clientBean.hasSelectedClientList()}" update="@this">
+                            <p:confirm header="Confirmation" message="Voulez-vous vraiment supprimer le(s) client(s) selectionné(s) ?"
+                                       icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="dt-client" widgetVar="dtClients" var="client" value="#{clientBean.clientList}"
+                             reflow="true" styleClass="client-table mt-2" selection="#{clientBean.selectedClientList}"
+                             rowKey="#{client.id}" paginator="true" rows="10" rowSelectMode="add" paginatorPosition="bottom" stripedRows="true">
+                    <f:facet name="header">
+                        <div class="client-table-header" style="display: flex; justify-content: space-between;">
+                            <span style="font-weight: bold; padding-top: 5px;">Client</span>
+                            <div class="ui-inputgroup">
+                                <p:inputText id="globalFilter" onkeyup="PF('dtClients').filter()"  placeholder="Rechercher..."/>
+                                <p:commandButton icon="pi pi-search" styleClass="ui-button-warning"/>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:ajax event="rowSelect" update=":form:delete-client-button" />
+                    <p:ajax event="rowUnselect" update=":form:delete-client-button" />
+                    <p:ajax event="rowSelectCheckbox" update=":form:delete-client-button" />
+                    <p:ajax event="rowUnselectCheckbox" update=":form:delete-client-button" />
+                    <p:ajax event="toggleSelect" update=":form:delete-client-button" />
+
+                    <p:column selectionMode="multiple" exportable="false" style="width: 20px;"></p:column>
+
+                    <p:column headerText="ID" sortBy="#{client.id}" filterBy="#{client.id}" styleClass="text-center" style="width: 75px;">
+                        <h:outputText value="#{client.id}" />
+                    </p:column>
+                    <p:column headerText="Prenom" sortBy="#{client.prenom}" filterBy="#{client.prenom}" styleClass="text-center" style="width: 120px;">
+                        <h:outputText value="#{client.prenom}" />
+                    </p:column>
+                    <p:column headerText="Nom" sortBy="#{client.nom}" filterBy="#{client.nom}" styleClass="text-center" style="width: 100px;">
+                        <h:outputText value="#{client.nom}" />
+                    </p:column>
+                    <p:column headerText="Telephone" sortBy="#{client.telephone}" filterBy="#{client.telephone}" styleClass="text-center" style="width: 150px;">
+                        <h:outputText value="#{client.telephone}" />
+                    </p:column>
+                    <p:column headerText="Email" sortBy="#{client.email}" filterBy="#{client.email}" styleClass="text-center" style="width: 250px;">
+                        <h:outputText value="#{client.email}" />
+                    </p:column>
+                    <p:column headerText="Adresse" sortBy="#{client.adresse}" filterBy="#{client.adresse}" styleClass="text-center" style="width: 200px;">
+                        <h:outputText value="#{client.adresse}" />
+                    </p:column>
+                    <p:column headerText="Ville" sortBy="#{client.ville}" filterBy="#{client.ville}" styleClass="text-center" style="width: 150px;">
+                        <h:outputText value="#{client.ville}" />
+                    </p:column>
+                    <p:column headerText="Etat" sortBy="#{client.etat}" filterBy="#{client.etat}" styleClass="text-center" style="width: 80px;">
+                        <h:outputText value="#{client.etat}" />
+                    </p:column>
+                    <p:column headerText="Code Zip" sortBy="#{client.codeZip}" filterBy="#{client.codeZip}" styleClass="text-center" style="width: 150px;">
+                        <h:outputText value="#{client.codeZip}" />
+                    </p:column>
+                    <p:column headerText="MAJ - Supprimer" exportable="false" styleClass="text-center" style="width: 100px;">
+                        <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-client-content"
+                                         oncomplete="PF('manageClientDialog').show()"
+                                         styleClass="edit-button rounded-button ui-button-success me-2" process="@this">
+                            <f:setPropertyActionListener value="#{client}" target="#{clientBean.selectedClient}" />
+                            <p:resetInput target=":dialogs:manage-client-content" />
+                        </p:commandButton>
+                        <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                         process="@this"
+                                         oncomplete="PF('deleteClientDialog').show()">
+                            <f:setPropertyActionListener value="#{client}" target="#{clientBean.selectedClient}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <h:form id="dialogs">
+                <p:dialog header="Client" resizable="false" fitViewport="true"
+                          width="900px" showEffect="fade" modal="true"
+                          widgetVar="manageClientDialog" responsive="true">
+                    <p:outputPanel id="manage-client-content" class="ui-fluid">
+                        <p:outputPanel rendered="#{not empty clientBean.selectedClient}">
+                            <div class="grid ui-fluid">
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-user" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Prenom" required="true" value="#{clientBean.selectedClient.prenom}"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-user" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Nom" required="true" value="#{clientBean.selectedClient.nom}"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-phone" styleClass="ui-button-help"/>
+                                            <p:inputMask mask="(999) 999-9999" validateMask="true" placeholder="Telephone" value="#{clientBean.selectedClient.telephone}" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-at" styleClass="ui-button-help"/>
+                                            <p:inputText required="true" placeholder="Email" value="#{clientBean.selectedClient.email}" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-home" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Adresse" required="true" value="#{clientBean.selectedClient.adresse}"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-flag" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Etat" required="true" maxlength="2" value="#{clientBean.selectedClient.etat}">
+                                                <p:keyFilter regEx="/[A-Z]/i"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-map-marker" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Ville" required="true" value="#{clientBean.selectedClient.ville}"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-bookmark" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Code ZIP" required="true" maxlength="5" value="#{clientBean.selectedClient.codeZip}">
+                                                <p:keyFilter mask="num" />
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Enregistrer" icon="pi pi-check" actionListener="#{clientBean.saveClient}"
+                                         update="manage-client-content" process="manage-client-content @this" class="ui-button-success" />
+                        <p:commandButton value="Annuler" icon="pi pi-times" onclick="PF('manageClientDialog').hide()"
+                                         class="ui-button-danger" type="button" />
+                    </f:facet>
+                </p:dialog>
+
+                <p:confirmDialog widgetVar="deleteClientDialog" showEffect="fade" width="500"
+                                 message="Voulez-vous supprimer ce client ?" header="Confirmation" severity="warn">
+                    <p:commandButton value="Oui" icon="pi pi-check" actionListener="#{clientBean.deleteClient}"
+                                     process="@this" update=":form:delete-client-button" class="ui-button-success"
+                                     oncomplete="PF('deleteClientDialog').hide()" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                                     class="ui-button-danger" onclick="PF('deleteClientDialog').hide()" />
+                </p:confirmDialog>
+
+                <p:confirmDialog global="true" showEffect="fade" width="800">
+                    <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes ui-button-success" icon="pi pi-check" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no ui-button-danger"
+                                     icon="pi pi-times" />
+                </p:confirmDialog>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

@@ -7,7 +7,6 @@ import java.util.Collection;
 @Entity
 @Table(name = "magasin")
 public class Magasin {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "ID", nullable = false)
     private Integer id;
@@ -33,9 +32,92 @@ public class Magasin {
     @Column(name = "CODE_ZIP")
     private String codeZip;
     @OneToMany(mappedBy = "magasin")
-    @JoinColumn(name = "ID", referencedColumnName = "MAGASIN_ID")
     private Collection<Stock> stocks;
     @OneToMany(mappedBy = "magasin")
-    @JoinColumn(name = "ID", referencedColumnName = "MAGASIN_ID")
     private Collection<Commande> commandes;
+    @OneToMany(mappedBy = "magasin")
+    private Collection<Employe> employes;
+
+    public Magasin() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
+    }
+
+    public String getVille() {
+        return ville;
+    }
+
+    public void setVille(String ville) {
+        this.ville = ville;
+    }
+
+    public String getEtat() {
+        return etat;
+    }
+
+    public void setEtat(String etat) {
+        this.etat = etat;
+    }
+
+    public String getCodeZip() {
+        return codeZip;
+    }
+
+    public void setCodeZip(String codeZip) {
+        this.codeZip = codeZip;
+    }
+
+    @Override
+    public String toString() {
+        return "Magasin{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", telephone='" + telephone + '\'' +
+                ", email='" + email + '\'' +
+                ", adresse='" + adresse + '\'' +
+                ", ville='" + ville + '\'' +
+                ", etat='" + etat + '\'' +
+                ", codeZip='" + codeZip + '\'' +
+                ", stocks=" + stocks +
+                ", commandes=" + commandes +
+                '}';
+    }
 }

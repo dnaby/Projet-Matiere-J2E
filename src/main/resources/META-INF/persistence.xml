@@ -4,7 +4,7 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
     <persistence-unit name="projet_matiere" transaction-type="JTA">
-        <jta-data-source>projet_matiere_j2e</jta-data-source>
+        <jta-data-source>jdbc/projet_matiere</jta-data-source>
         <class>sn.ept.git47.entity.Marque</class>
         <class>sn.ept.git47.entity.Categorie</class>
         <class>sn.ept.git47.entity.Produit</class>

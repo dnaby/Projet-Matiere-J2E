@@ -1,0 +1,170 @@
+<ui:composition template="template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div class="card">
+            <h:form id="form">
+                <p:growl id="produit" showDetail="true" />
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Nouveau" icon="pi pi-plus" actionListener="#{produitBean.openNewProduit}"
+                                         update=":dialogs:manage-produit-content" oncomplete="PF('manageProduitDialog').show()"
+                                         styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":dialogs:manage-produit-content" />
+                        </p:commandButton>
+                        <p:commandButton id="delete-produit-button" value="#{produitBean.deleteButtonMessage}"
+                                         icon="pi pi-trash" actionListener="#{produitBean.deleteSelectedProduitList}"
+                                         styleClass="ui-button-danger" disabled="#{!produitBean.hasSelectedProduitList()}" update="@this">
+                            <p:confirm header="Confirmation" message="Voulez-vous vraiment supprimer le(s) produits(s) selectionné(s) ?"
+                                       icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="dt-produit" widgetVar="dtProduits" var="produit" value="#{produitBean.produitList}"
+                             reflow="true" styleClass="produit-table mt-2" selection="#{produitBean.selectedProduitList}"
+                             rowKey="#{produit.id}" paginator="true" rows="10" rowSelectMode="add" paginatorPosition="bottom" stripedRows="true">
+                    <f:facet name="header">
+                        <div class="produit-table-header" style="display: flex; justify-content: space-between;">
+                            <span style="font-weight: bold; padding-top: 5px;">Produit</span>
+                            <div class="ui-inputgroup">
+                                <p:inputText id="globalFilter" onkeyup="PF('dtProduits').filter()"  placeholder="Rechercher..."/>
+                                <p:commandButton icon="pi pi-search" styleClass="ui-button-warning"/>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:ajax event="rowSelect" update=":form:delete-produit-button" />
+                    <p:ajax event="rowUnselect" update=":form:delete-produit-button" />
+                    <p:ajax event="rowSelectCheckbox" update=":form:delete-produit-button" />
+                    <p:ajax event="rowUnselectCheckbox" update=":form:delete-produit-button" />
+                    <p:ajax event="toggleSelect" update=":form:delete-produit-button" />
+
+                    <p:column selectionMode="multiple" exportable="false" style="width: 10px !important;"></p:column>
+
+                    <p:column headerText="ID" sortBy="#{produit.id}" filterBy="#{produit.id}" styleClass="text-center" style="width: 75px;">
+                        <h:outputText value="#{produit.id}" />
+                    </p:column>
+                    <p:column headerText="Nom" sortBy="#{produit.nom}" filterBy="#{produit.nom}" styleClass="text-center" style="width: 200px;">
+                        <h:outputText value="#{produit.nom}" />
+                    </p:column>
+                    <p:column headerText="Marque" sortBy="#{produit.marque.nom}" filterBy="#{produit.marque.nom}" styleClass="text-center" style="width: 120px;">
+                        <h:outputText value="#{produit.marque.nom}" />
+                    </p:column>
+                    <p:column headerText="Catégorie" sortBy="#{produit.categorie.nom}" filterBy="#{produit.categorie.nom}" styleClass="text-center" style="width: 120px;">
+                        <h:outputText value="#{produit.categorie.nom}" />
+                    </p:column>
+                    <p:column headerText="Année Modèle" sortBy="#{produit.anneeModel}" filterBy="#{produit.anneeModel}" styleClass="text-center" style="width: 120px;">
+                        <h:outputText value="#{produit.anneeModel}" />
+                    </p:column>
+                    <p:column headerText="Prix Départ" sortBy="#{produit.prixDepart}" filterBy="#{produit.prixDepart}" styleClass="text-center" style="width: 120px;">
+                        <h:outputText value="#{produit.prixDepart}" style="font-weight: 700">
+                            <f:convertNumber currencySymbol="$" type="currency" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="MAJ - Supprimer" exportable="false" styleClass="text-center" style="width: 75px;">
+                        <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-produit-content"
+                                         oncomplete="PF('manageProduitDialog').show()"
+                                         styleClass="edit-button rounded-button ui-button-success me-2" process="@this">
+                            <f:setPropertyActionListener value="#{produit}" target="#{produitBean.selectedProduit}" />
+                            <p:resetInput target=":dialogs:manage-produit-content" />
+                        </p:commandButton>
+                        <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                         process="@this"
+                                         oncomplete="PF('deleteProduitDialog').show()">
+                            <f:setPropertyActionListener value="#{produit}" target="#{produitBean.selectedProduit}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <h:form id="dialogs">
+                <p:dialog header="Produit" resizable="false" fitViewport="true"
+                          width="900px" showEffect="fade" modal="true"
+                          widgetVar="manageProduitDialog" responsive="true">
+                    <p:outputPanel id="manage-produit-content" class="ui-fluid">
+                        <p:outputPanel rendered="#{not empty produitBean.selectedProduit}">
+                            <div class="grid ui-fluid">
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-user"/>
+                                            <p:inputText placeholder="Nom" required="true" value="#{produitBean.selectedProduit.nom}"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-bookmark"/>
+                                            <p:autoComplete dropdown="true" placeholder="Produit" value="#{produitBean.selectedProduit.marque.nom}"
+                                                            completeMethod="#{produitBean.completeMarque}" scrollHeight="250"
+                                                            dropdownMode="panel" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-tags"/>
+                                            <p:autoComplete dropdown="true" placeholder="Catégorie" value="#{produitBean.selectedProduit.categorie.nom}"
+                                                            completeMethod="#{produitBean.completeCategorie}" scrollHeight="250" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-calendar"/>
+                                            <p:inputText placeholder="Année Model" required="true" maxlength="4" value="#{produitBean.selectedProduit.anneeModel}">
+                                                <p:keyFilter mask="num" />
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-money-bill"/>
+                                            <p:inputNumber placeholder="Prix Départ" value="#{produitBean.selectedProduit.prixDepart}" decimalPlaces="2" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Enregistrer" icon="pi pi-check" actionListener="#{produitBean.saveProduit}"
+                                         update="manage-produit-content" process="manage-produit-content @this" class="ui-button-success" />
+                        <p:commandButton value="Annuler" icon="pi pi-times" onclick="PF('manageProduitDialog').hide()"
+                                         class="ui-button-danger" type="button" />
+                    </f:facet>
+                </p:dialog>
+
+                <p:confirmDialog widgetVar="deleteProduitDialog" showEffect="fade" width="500"
+                                 message="Voulez-vous réellement supprimer ce produit ?" header="Confirmation" severity="warn">
+                    <p:commandButton value="Oui" icon="pi pi-check" actionListener="#{produitBean.deleteProduit}"
+                                     process="@this" update=":form:delete-produit-button" class="ui-button-success"
+                                     oncomplete="PF('deleteProduitDialog').hide()" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                                     class="ui-button-danger" onclick="PF('deleteProduitDialog').hide()" />
+                </p:confirmDialog>
+
+                <p:confirmDialog global="true" showEffect="fade" width="800">
+                    <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes ui-button-success" icon="pi pi-check" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no ui-button-danger"
+                                     icon="pi pi-times" />
+                </p:confirmDialog>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

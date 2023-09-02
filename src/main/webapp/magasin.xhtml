@@ -1,0 +1,187 @@
+<ui:composition template="template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div class="card crud-demo">
+            <h:form id="form">
+                <p:growl id="magasin" showDetail="true" />
+
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Nouveau" icon="pi pi-plus" actionListener="#{magasinBean.openNewMagasin}"
+                                         update=":dialogs:manage-magasin-content" oncomplete="PF('manageMagasinDialog').show()"
+                                         styleClass="ui-button-success" style="margin-right: .5rem">
+                            <p:resetInput target=":dialogs:manage-magasin-content" />
+                        </p:commandButton>
+                        <p:commandButton id="delete-magasin-button" value="#{magasinBean.deleteButtonMessage}"
+                                         icon="pi pi-trash" actionListener="#{magasinBean.deleteSelectedMagasinList}"
+                                         styleClass="ui-button-danger" disabled="#{!magasinBean.hasSelectedMagasinList()}" update="@this">
+                            <p:confirm header="Confirmation" message="Voulez-vous vraiment supprimer le(s) magasin(s) selectionné(s) ?"
+                                       icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="dt-magasin" widgetVar="dtMagasins" var="magasin" value="#{magasinBean.magasinList}"
+                             reflow="true" styleClass="magasin-table mt-2" selection="#{magasinBean.selectedMagasinList}"
+                             rowKey="#{magasin.id}" paginator="true" rows="10" rowSelectMode="add" paginatorPosition="bottom" stripedRows="true">
+                    <f:facet name="header">
+                        <div class="magasin-table-header" style="display: flex; justify-content: space-between;">
+                            <span style="font-weight: bold; padding-top: 5px;">Magasin</span>
+                            <div class="ui-inputgroup">
+                                <p:inputText id="globalFilter" onkeyup="PF('dtMagasins').filter()"  placeholder="Rechercher..."/>
+                                <p:commandButton icon="pi pi-search" styleClass="ui-button-warning"/>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:ajax event="rowSelect" update=":form:delete-magasin-button" />
+                    <p:ajax event="rowUnselect" update=":form:delete-magasin-button" />
+                    <p:ajax event="rowSelectCheckbox" update=":form:delete-magasin-button" />
+                    <p:ajax event="rowUnselectCheckbox" update=":form:delete-magasin-button" />
+                    <p:ajax event="toggleSelect" update=":form:delete-magasin-button" />
+
+                    <p:column selectionMode="multiple" exportable="false" style="width: 20px;"></p:column>
+
+                    <p:column headerText="ID" sortBy="#{magasin.id}" filterBy="#{magasin.id}" styleClass="text-center" style="width: 75px;">
+                        <h:outputText value="#{magasin.id}" />
+                    </p:column>
+                    <p:column headerText="Nom" sortBy="#{magasin.nom}" filterBy="#{magasin.nom}" styleClass="text-center" style="width: 120px;">
+                        <h:outputText value="#{magasin.nom}" />
+                    </p:column>
+                    <p:column headerText="Telephone" sortBy="#{magasin.telephone}" filterBy="#{magasin.telephone}" styleClass="text-center" style="width: 120px;">
+                        <h:outputText value="#{magasin.telephone}" />
+                    </p:column>
+                    <p:column headerText="Email" sortBy="#{magasin.email}" filterBy="#{magasin.email}" styleClass="text-center" style="width: 230px;">
+                        <h:outputText value="#{magasin.email}" />
+                    </p:column>
+                    <p:column headerText="Adresse" sortBy="#{magasin.adresse}" filterBy="#{magasin.adresse}" styleClass="text-center" style="width: 200px;">
+                        <h:outputText value="#{magasin.adresse}" />
+                    </p:column>
+                    <p:column headerText="Ville" sortBy="#{magasin.ville}" filterBy="#{magasin.ville}" styleClass="text-center" style="width: 150px;">
+                        <h:outputText value="#{magasin.ville}" />
+                    </p:column>
+                    <p:column headerText="Etat" sortBy="#{magasin.etat}" filterBy="#{magasin.etat}" styleClass="text-center" style="width: 100px;">
+                        <h:outputText value="#{magasin.etat}" />
+                    </p:column>
+                    <p:column headerText="Code Zip" sortBy="#{magasin.codeZip}" filterBy="#{magasin.codeZip}" styleClass="text-center" style="width: 150px;">
+                        <h:outputText value="#{magasin.codeZip}" />
+                    </p:column>
+                    <p:column headerText="MAJ - Supprimer" exportable="false" styleClass="text-center" style="width: 100px;">
+                        <p:commandButton icon="pi pi-pencil" update=":dialogs:manage-magasin-content"
+                                         oncomplete="PF('manageMagasinDialog').show()"
+                                         styleClass="edit-button rounded-button ui-button-success me-2" process="@this">
+                            <f:setPropertyActionListener value="#{magasin}" target="#{magasinBean.selectedMagasin}" />
+                            <p:resetInput target=":dialogs:manage-magasin-content" />
+                        </p:commandButton>
+                        <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                         process="@this"
+                                         oncomplete="PF('deleteMagasinDialog').show()">
+                            <f:setPropertyActionListener value="#{magasin}" target="#{magasinBean.selectedMagasin}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <h:form id="dialogs">
+                <p:dialog header="Magasin" resizable="false" fitViewport="true"
+                          width="900px" showEffect="fade" modal="true"
+                          widgetVar="manageMagasinDialog" responsive="true">
+                    <p:outputPanel id="manage-magasin-content" class="ui-fluid">
+                        <p:outputPanel rendered="#{not empty magasinBean.selectedMagasin}">
+                            <div class="grid ui-fluid">
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-user" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Nom" required="true" value="#{magasinBean.selectedMagasin.nom}"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-phone" styleClass="ui-button-help"/>
+                                            <p:inputMask mask="(999) 999-9999" validateMask="true" placeholder="Telephone" value="#{magasinBean.selectedMagasin.telephone}" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-at" styleClass="ui-button-help"/>
+                                            <p:inputText required="true" placeholder="Email" value="#{magasinBean.selectedMagasin.email}" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-home" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Adresse" required="true" value="#{magasinBean.selectedMagasin.adresse}"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-flag" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Etat" required="true" maxlength="2" value="#{magasinBean.selectedMagasin.etat}">
+                                                <p:keyFilter regEx="/[A-Z]/i"/>
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-map-marker" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Ville" required="true" value="#{magasinBean.selectedMagasin.ville}"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="ui-inputgroup">
+                                            <p:commandButton icon="pi pi-bookmark" styleClass="ui-button-help"/>
+                                            <p:inputText placeholder="Code ZIP" required="true" maxlength="5" value="#{magasinBean.selectedMagasin.codeZip}">
+                                                <p:keyFilter mask="num" />
+                                            </p:inputText>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Enregistrer" icon="pi pi-check" actionListener="#{magasinBean.saveMagasin}"
+                                         update="manage-magasin-content" process="manage-magasin-content @this" class="ui-button-success" />
+                        <p:commandButton value="Annuler" icon="pi pi-times" onclick="PF('manageMagasinDialog').hide()"
+                                         class="ui-button-danger" type="button" />
+                    </f:facet>
+                </p:dialog>
+
+                <p:confirmDialog widgetVar="deleteMagasinDialog" showEffect="fade" width="500"
+                                 message="Voulez-vous supprimer ce magasin ?" header="Confirmation" severity="warn">
+                    <p:commandButton value="Oui" icon="pi pi-check" actionListener="#{magasinBean.deleteMagasin}"
+                                     process="@this" update=":form:delete-magasin-button" class="ui-button-success"
+                                     oncomplete="PF('deleteMagasinDialog').hide()" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                                     class="ui-button-danger" onclick="PF('deleteMagasinDialog').hide()" />
+                </p:confirmDialog>
+
+                <p:confirmDialog global="true" showEffect="fade" width="800">
+                    <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes ui-button-success" icon="pi pi-check" />
+                    <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no ui-button-danger"
+                                     icon="pi pi-times" />
+                </p:confirmDialog>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>
