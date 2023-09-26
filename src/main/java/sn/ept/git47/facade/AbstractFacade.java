@@ -29,6 +29,10 @@ public abstract class AbstractFacade<T> {
         }
     }
 
+    public T find(Object id) {
+        return getEntityManager().find(entityClass, id);
+    }
+
     public List<T> findAll() {
         CriteriaQuery criteriaQuery = getEntityManager().getCriteriaBuilder().createQuery();
         criteriaQuery.select(criteriaQuery.from(entityClass));

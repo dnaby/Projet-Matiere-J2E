@@ -1,18 +1,24 @@
 package sn.ept.git47.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+@XmlRootElement(name = "marque")
 @Entity
 @Table(name = "marque")
 public class Marque implements Serializable {
     @Id
     @Column(name = "ID", nullable = false)
+    @Schema(description = "ID of the Marque")
     private Integer id;
     @Basic
     @Column(name = "NOM", nullable = false)
+    @Schema(description = "Name of the Marque")
     private String nom;
     @OneToMany(mappedBy = "marque")
     @JoinColumn(insertable = false, updatable = false)

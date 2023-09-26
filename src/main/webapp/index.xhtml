@@ -8,9 +8,9 @@
     <ui:define name="content">
         <p:galleria value="#{galleriaView.photos}" var="photo" numVisible="5" responsiveOptions="#{galleriaView.responsiveOptions1}"
                     circular="true" autoPlay="true" transitionInterval="2000" style="margin-top: -10px; margin-left: 1px; margin-right: 1px;">
-            <h:graphicImage value="#{photo.itemImageSrc}" alt="#{photo.alt}" style="display: block;" width="100%" height="757px" />
+            <h:graphicImage value="#{photo.itemImageSrc}" alt="#{photo.alt}" style="display: block;" width="100%" height="760px" />
             <f:facet name="thumbnail">
-                <h:graphicImage value="#{photo.thumbnailImageSrc}" alt="#{photo.alt}" style="display: block;" width="200px" height="100px" />
+                <h:graphicImage value="#{photo.thumbnailImageSrc}" alt="#{photo.alt}" style="display: block;" width="200px" height="120px" />
             </f:facet>
         </p:galleria>
     </ui:define>

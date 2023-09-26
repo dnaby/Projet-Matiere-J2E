@@ -15,7 +15,7 @@ import java.util.List;
 
 @Named("categorieBean")
 @ViewScoped
-public class CategorieBean implements Serializable {
+public class  CategorieBean implements Serializable {
     @EJB
     private CategorieFacade categorieFacade;
 

@@ -28,6 +28,7 @@ public class MarqueFacade extends AbstractFacade<Marque> {
         TypedQuery<Marque> query = entityManager.createQuery(criteriaQuery);
 
         try {
+            System.out.println(query.getResultList().toString());
             return query.getSingleResult();
         } catch (NoResultException e) {
             return null;
