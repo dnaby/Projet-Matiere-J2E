@@ -1,11 +1,14 @@
 package sn.ept.git47.entity;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
+@XmlRootElement(name = "commande")
 @Entity
 @Table(name = "commande")
 public class Commande implements Serializable {
@@ -42,8 +45,6 @@ public class Commande implements Serializable {
     @ManyToOne
     @JoinColumn(name = "CLIENT_ID", referencedColumnName = "ID", nullable = false, updatable = false, insertable = false)
     private Client client;
-    @OneToMany(mappedBy = "commande")
-    private Collection<ArticleCommande> article_commandes;
 
     public Commande() {
     }

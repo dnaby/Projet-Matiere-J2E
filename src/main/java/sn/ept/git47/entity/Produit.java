@@ -1,11 +1,14 @@
 package sn.ept.git47.entity;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 
+@XmlRootElement(name = "produit")
 @Entity
 @Table(name = "produit")
 public class Produit implements Serializable {
@@ -33,9 +36,11 @@ public class Produit implements Serializable {
     @ManyToOne
     @JoinColumn(name="CATEGORIE_ID", referencedColumnName = "ID", nullable = false, updatable = false, insertable = false)
     private Categorie categorie;
+    @JsonbTransient
     @OneToMany(mappedBy = "produit")
     @JoinColumn(updatable = false, insertable = false)
     private Collection<Stock> stocks;
+    @JsonbTransient
     @OneToMany(mappedBy = "produit")
     @JoinColumn(updatable = false, insertable = false)
     private Collection<ArticleCommande> articleCommandes;

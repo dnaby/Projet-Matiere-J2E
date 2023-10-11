@@ -1,8 +1,12 @@
 package sn.ept.git47.entity;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
 
+@XmlRootElement(name = "stock")
 @Entity
 @Table(name = "stock")
 @NamedQuery(
@@ -22,6 +26,7 @@ public class Stock implements Serializable {
     @ManyToOne
     @JoinColumn(name = "PRODUIT_ID", referencedColumnName = "ID", nullable = false, updatable = false, insertable = false)
     private Produit produit;
+
     @ManyToOne
     @JoinColumn(name = "MAGASIN_ID", referencedColumnName = "ID", nullable = false, updatable = false, insertable = false)
     private Magasin magasin;

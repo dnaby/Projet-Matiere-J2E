@@ -54,7 +54,7 @@ public class MarqueR {
             description = "This endpoint create a new marque given its name.",
             responses = {
                     @ApiResponse(responseCode = "409", description = "Marque with the given name already exists"),
-                    @ApiResponse(responseCode = "200", description = "New Marque Created Successfully"),
+                    @ApiResponse(responseCode = "201", description = "New Marque Created Successfully"),
                     @ApiResponse(responseCode = "500", description = "Internal Server Error")
             }
     )
@@ -79,7 +79,7 @@ public class MarqueR {
                 marqueResponse.setMarque(newMarque);
                 marqueResponse.setMsg("Marque with the name " + newMarque.getNom() + " created successfully!");
                 return Response
-                        .status(Response.Status.OK)
+                        .status(Response.Status.CREATED)
                         .entity(marqueResponse)
                         .build();
             }

@@ -8,12 +8,12 @@ import jakarta.inject.Inject;
 import jakarta.mail.MessagingException;
 
 @Singleton
-/*@Startup*/
+@Startup
 public class AppLifecycle {
     @Inject
     private EmailSender emailSender;
 
-    //@PostConstruct
+    @PostConstruct
     public void appStartup() {
         try {
             emailSender.sendEmail("nabylmoustaphadia@gmail.com", "Application Started", "Application has been started !");
@@ -22,7 +22,7 @@ public class AppLifecycle {
         }
     }
 
-    //@PreDestroy
+    @PreDestroy
     public void appShutdown() {
         try {
             emailSender.sendEmail("nabylmoustaphadia@gmail.com", "Application Stopped", "Application has been stopped !");

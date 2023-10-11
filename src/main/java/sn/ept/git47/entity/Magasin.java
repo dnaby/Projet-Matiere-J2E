@@ -45,8 +45,6 @@ public class Magasin {
     @OneToMany(mappedBy = "magasin")
     private Collection<Stock> stocks;
     @OneToMany(mappedBy = "magasin")
-    private Collection<Commande> commandes;
-    @OneToMany(mappedBy = "magasin")
     private Collection<Employe> employes;
 
     public Magasin() {
@@ -128,7 +126,6 @@ public class Magasin {
                 ", etat='" + etat + '\'' +
                 ", codeZip='" + codeZip + '\'' +
                 ", stocks=" + stocks +
-                ", commandes=" + commandes +
                 '}';
     }
 }

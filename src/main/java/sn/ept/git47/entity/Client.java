@@ -2,11 +2,13 @@ package sn.ept.git47.entity;
 
 import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.eclipse.persistence.oxm.annotations.XmlDiscriminatorNode;
 
 import java.io.Serializable;
 import java.util.Collection;
 
+@XmlRootElement(name = "client")
 @Entity
 @Table(name = "client")
 @DiscriminatorValue("CLIENT")

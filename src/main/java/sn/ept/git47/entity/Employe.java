@@ -1,10 +1,13 @@
 package sn.ept.git47.entity;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 import java.util.Collection;
 
+@XmlRootElement(name = "employe")
 @Entity
 @Table(name = "employe")
 @DiscriminatorValue("EMPLOYE")
@@ -24,11 +27,6 @@ public class Employe extends Personne implements Serializable {
     @ManyToOne
     @JoinColumn(name = "MAGASIN_ID", referencedColumnName = "ID", nullable = false, updatable = false, insertable = false)
     private Magasin magasin;
-    @OneToMany(mappedBy = "manager")
-    @JoinColumn(name="ID", referencedColumnName = "MANAGER_ID", nullable = false, updatable = false, insertable = false)
-    private Collection<Employe> employes_manager;
-    @OneToMany(mappedBy = "vendeur")
-    private Collection<Commande> commandes;
 
     public Employe() {
     }
@@ -71,21 +69,5 @@ public class Employe extends Personne implements Serializable {
 
     public void setMagasin(Magasin magasin) {
         this.magasin = magasin;
-    }
-
-    public Collection<Employe> getEmployes_manager() {
-        return employes_manager;
-    }
-
-    public void setEmployes_manager(Collection<Employe> employes_manager) {
-        this.employes_manager = employes_manager;
-    }
-
-    public Collection<Commande> getCommandes() {
-        return commandes;
-    }
-
-    public void setCommandes(Collection<Commande> commandes) {
-        this.commandes = commandes;
     }
 }

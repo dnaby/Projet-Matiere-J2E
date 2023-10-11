@@ -1,10 +1,12 @@
 package sn.ept.git47.entity;
 
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+@XmlRootElement(name = "article_commande")
 @Entity
 @Table(name = "article_commande")
 public class ArticleCommande implements Serializable {

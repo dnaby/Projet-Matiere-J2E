@@ -6,7 +6,6 @@ import sn.ept.git47.entity.Marque;
 @XmlRootElement(name = "customResponse")
 public class CustomResponse {
     private String msg;
-    private Marque marque;
 
     public CustomResponse() {
     }

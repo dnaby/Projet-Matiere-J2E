@@ -19,7 +19,7 @@ public class StockAlert {
     @Inject
     private EmailSender emailSender;
 
-    //@Schedule(hour = "*", minute = "*/30", persistent = false)
+    @Schedule(hour = "*", minute = "*/30", persistent = false)
     public void sendStockAlerts() {
         try {
             TypedQuery<Object[]> query = entityManager.createNamedQuery("Stock.getStockStatus", Object[].class);

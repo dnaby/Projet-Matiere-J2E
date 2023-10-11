@@ -57,7 +57,7 @@ public class CategorieR {
             description = "This endpoint create a new categorie given its name.",
             responses = {
                     @ApiResponse(responseCode = "409", description = "Categorie with the given name already exists"),
-                    @ApiResponse(responseCode = "200", description = "New Categorie Created Successfully"),
+                    @ApiResponse(responseCode = "201", description = "New Categorie Created Successfully"),
                     @ApiResponse(responseCode = "500", description = "Internal Server Error")
             }
     )
@@ -82,7 +82,7 @@ public class CategorieR {
                 categorieResponse.setCategorie(newCategorie);
                 categorieResponse.setMsg("Categorie with the name " + newCategorie.getNom() + " created successfully!");
                 return Response
-                        .status(Response.Status.OK)
+                        .status(Response.Status.CREATED)
                         .entity(categorieResponse)
                         .build();
             }
@@ -100,7 +100,7 @@ public class CategorieR {
     @Path("{id}")
     @Operation(
             summary = "Update existing Categorie",
-            description = "This endpoint create a new categorie given its ID.",
+            description = "This endpoint update a categorie given its ID.",
             responses = {
                     @ApiResponse(responseCode = "404", description = "Categorie with the given ID no longer exists in the database."),
                     @ApiResponse(responseCode = "409", description = "Categorie with the updated Name already exist."),

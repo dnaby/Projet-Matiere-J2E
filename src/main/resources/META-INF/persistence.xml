@@ -15,6 +15,7 @@
         <class>sn.ept.git47.entity.Employe</class>
         <class>sn.ept.git47.entity.Commande</class>
         <class>sn.ept.git47.entity.ArticleCommande</class>
+        <class>sn.ept.git47.entity.Location</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
